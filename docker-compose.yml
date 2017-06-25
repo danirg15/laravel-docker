@@ -1,0 +1,37 @@
+version: '2'
+services:
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    image: laravel-docker/app
+    volumes:
+     - .:/var/www/html
+    ports:
+     - "${APP_PORT}:80"
+    links:
+     - mysql
+
+  node:
+    build:
+      context: ./docker/node
+      dockerfile: Dockerfile
+    image: laravel-docker/node
+    volumes:
+     - .:/var/www/html
+    
+  mysql:
+    image: mysql:5.7
+    ports:
+     - "${MYSQL_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_DATABASE: "homestead"
+      MYSQL_USER: "homestead"
+      MYSQL_PASSWORD: "secret"
+    volumes:
+     - mysqldata:/var/lib/mysql
+    
+volumes:
+  mysqldata:
+    driver: "local"
